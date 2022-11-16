@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import br.com.cruzvita.forum.modelo.Usuario;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -31,6 +32,26 @@ public class TokenService {
 				.setExpiration(dataExpiracao)
 				.signWith(SignatureAlgorithm.HS256, secret)
 				.compact();
+	}
+
+	public boolean isTokenValido(String token) {
+		try {
+			//descriptografa o token e verifica se está ok
+			Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token);
+			return true;			
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public Long getIdUsuario(String token) {
+		
+		//pega o corpo do token
+		Claims claims = Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token).getBody();
+		//retorna o subject que é o id que foi guardado
+		return Long.parseLong(claims.getSubject());		
+		
+		
 	}
 
 }

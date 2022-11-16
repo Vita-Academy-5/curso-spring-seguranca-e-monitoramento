@@ -21,7 +21,7 @@ import br.com.cruzvita.forum.controller.form.LoginForm;
 @RequestMapping("/auth")
 public class AutenticacaoController {
 	
-	@Autowired
+	@Autowired //verifica usuario e senha
 	private AuthenticationManager authManager;
 	
 	@Autowired
