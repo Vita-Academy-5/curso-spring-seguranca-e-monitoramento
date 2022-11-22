@@ -24,6 +24,7 @@ public class TokenService {
 		Usuario logado = (Usuario) authentication.getPrincipal();
 		Date hoje = new Date();
 		Date dataExpiracao = new Date(hoje.getTime() + Long.parseLong(expiration));
+		
 		return Jwts.builder()
 				.setIssuer("API do Fórum da Alura")
 				.setSubject(logado.getId().toString())
@@ -35,17 +36,16 @@ public class TokenService {
 
 	public boolean isTokenValido(String token) {
 		try {
-		Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token);
-		return true;
+			Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token);
+			return true;
 		} catch (Exception e) {
 			return false;
-		} 
+		}
 	}
 
 	public Long getIdUsuario(String token) {
 		Claims claims = Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token).getBody();
 		return Long.parseLong(claims.getSubject());
-		
 	}
 
 }

@@ -32,34 +32,41 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 	@Override
 	@Bean
 	protected AuthenticationManager authenticationManager() throws Exception {
-		
 		return super.authenticationManager();
 	}
-
-	// Configurações de autenticação
+	
+	//Configuracoes de autenticacao
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(autenticacaoService).passwordEncoder(new BCryptPasswordEncoder());
 	}
-
-	// Configurações de Autorização
+	
+	//Configuracoes de autorizacao
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 		.antMatchers(HttpMethod.GET, "/topicos").permitAll()
 		.antMatchers(HttpMethod.GET, "/topicos/*").permitAll()
-		.antMatchers(HttpMethod.POST, "/auth/*").permitAll()
+		.antMatchers(HttpMethod.POST, "/auth").permitAll()
+		.antMatchers(HttpMethod.GET, "/actuator/**").permitAll()
 		.anyRequest().authenticated()
-		.and().csrf()
-		.disable().sessionManagement()
-		.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+		.and().csrf().disable()
+		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenService, usuarioRepository), UsernamePasswordAuthenticationFilter.class);
 	}
-
-	// Configurações de recursos estaticos(js, css, imagens, etc.)
+	
+	
+	//Configuracoes de recursos estaticos(js, css, imagens, etc.)
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-
+		web.ignoring().antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**", "/swagger-resources/**");
 	}
-
+	
 }
+
+
+
+
+
+
+
